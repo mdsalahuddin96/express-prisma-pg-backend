@@ -11,8 +11,27 @@
 
 export const Role = {
   User: 'User',
-  Admin: 'Admin',
-  Moderator: 'Moderator'
+  Organizer: 'Organizer',
+  Admin: 'Admin'
 } as const
 
 export type Role = (typeof Role)[keyof typeof Role]
+
+
+export const EventStatus = {
+  Draft: 'Draft',
+  Published: 'Published',
+  Cancelled: 'Cancelled',
+  Completed: 'Completed'
+} as const
+
+export type EventStatus = (typeof EventStatus)[keyof typeof EventStatus]
+
+
+export const BookingStatus = {
+  Pending: 'Pending',
+  Confirm: 'Confirm',
+  Cancelled: 'Cancelled'
+} as const
+
+export type BookingStatus = (typeof BookingStatus)[keyof typeof BookingStatus]

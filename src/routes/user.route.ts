@@ -1,7 +1,7 @@
-// import { Router } from "express";
+import { Router } from "express";
+import { createUser } from "../services/user.service";
+const route=Router()
 
-// const route=Router()
+route.post("/create",createUser)
 
-// route.post("/create",)
-
-// export default route;
+export default route;

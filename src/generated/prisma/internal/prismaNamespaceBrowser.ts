@@ -51,7 +51,11 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
-  User: 'User'
+  User: 'User',
+  Category: 'Category',
+  Event: 'Event',
+  Booking: 'Booking',
+  Review: 'Review'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -77,11 +81,74 @@ export const UserScalarFieldEnum = {
   name: 'name',
   image: 'image',
   role: 'role',
+  deletedAt: 'deletedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const CategoryScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  deletedAt: 'deletedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CategoryScalarFieldEnum = (typeof CategoryScalarFieldEnum)[keyof typeof CategoryScalarFieldEnum]
+
+
+export const EventScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  organizerId: 'organizerId',
+  categoryId: 'categoryId',
+  description: 'description',
+  location: 'location',
+  capacity: 'capacity',
+  price: 'price',
+  image: 'image',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  status: 'status',
+  deletedAt: 'deletedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EventScalarFieldEnum = (typeof EventScalarFieldEnum)[keyof typeof EventScalarFieldEnum]
+
+
+export const BookingScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  eventId: 'eventId',
+  quantity: 'quantity',
+  totalAmount: 'totalAmount',
+  status: 'status',
+  bookingDate: 'bookingDate',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BookingScalarFieldEnum = (typeof BookingScalarFieldEnum)[keyof typeof BookingScalarFieldEnum]
+
+
+export const ReviewScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  eventId: 'eventId',
+  rating: 'rating',
+  comment: 'comment',
+  deletedAt: 'deletedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ReviewScalarFieldEnum = (typeof ReviewScalarFieldEnum)[keyof typeof ReviewScalarFieldEnum]
 
 
 export const SortOrder = {

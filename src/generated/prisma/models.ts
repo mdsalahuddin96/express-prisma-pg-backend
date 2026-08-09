@@ -9,4 +9,8 @@
  * 🟢 You can import this file directly.
  */
 export type * from './models/User'
+export type * from './models/Category'
+export type * from './models/Event'
+export type * from './models/Booking'
+export type * from './models/Review'
 export type * from './commonInputTypes'
