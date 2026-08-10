@@ -1,34 +1,33 @@
-/*
-  Warnings:
+-- CreateEnum
+CREATE TYPE "Role" AS ENUM ('User', 'Organizer', 'Admin');
 
-  - The values [Moderator] on the enum `Role` will be removed. If these variants are still used in the database, this will fail.
-
-*/
 -- CreateEnum
 CREATE TYPE "EventStatus" AS ENUM ('Draft', 'Published', 'Cancelled', 'Completed');
 
 -- CreateEnum
 CREATE TYPE "BookingStatus" AS ENUM ('Pending', 'Confirm', 'Cancelled');
 
--- AlterEnum
-BEGIN;
-CREATE TYPE "Role_new" AS ENUM ('User', 'Organizer', 'Admin');
-ALTER TABLE "public"."users" ALTER COLUMN "role" DROP DEFAULT;
-ALTER TABLE "users" ALTER COLUMN "role" TYPE "Role_new" USING ("role"::text::"Role_new");
-ALTER TYPE "Role" RENAME TO "Role_old";
-ALTER TYPE "Role_new" RENAME TO "Role";
-DROP TYPE "public"."Role_old";
-ALTER TABLE "users" ALTER COLUMN "role" SET DEFAULT 'User';
-COMMIT;
+-- CreateTable
+CREATE TABLE "users" (
+    "id" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "password" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "image" TEXT,
+    "role" "Role" NOT NULL DEFAULT 'User',
+    "deletedAt" TIMESTAMP(3),
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
--- AlterTable
-ALTER TABLE "users" ALTER COLUMN "updatedAt" DROP DEFAULT;
+    CONSTRAINT "users_pkey" PRIMARY KEY ("id")
+);
 
 -- CreateTable
 CREATE TABLE "categories" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT,
+    "deletedAt" TIMESTAMP(3),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -49,6 +48,7 @@ CREATE TABLE "events" (
     "startDate" TIMESTAMP(3) NOT NULL,
     "endDate" TIMESTAMP(3) NOT NULL,
     "status" "EventStatus" NOT NULL DEFAULT 'Draft',
+    "deletedAt" TIMESTAMP(3),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -77,11 +77,18 @@ CREATE TABLE "reviews" (
     "eventId" TEXT NOT NULL,
     "rating" DOUBLE PRECISION NOT NULL,
     "comment" TEXT,
+    "deletedAt" TIMESTAMP(3),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "reviews_pkey" PRIMARY KEY ("id")
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
+
+-- CreateIndex
+CREATE INDEX "users_email_idx" ON "users"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "categories_name_key" ON "categories"("name");
