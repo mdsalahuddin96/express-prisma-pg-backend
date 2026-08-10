@@ -1,44 +1,32 @@
-import { Request, Response } from "express";
+
 import prisma from "../lib/prisma";
 
-export const createCategory = async (req: Request, res: Response) => {
-    const categoryData=req.body;
+interface CategoryDataType{
+  name:        string;
+  description?: string;
+}
+export const createCategory = async (categoryData:CategoryDataType) => {
   try {
     const newCategory=await prisma.category.create({data:categoryData})
-    res.status(201).json({
-      success: true,
-      message: "Category Created Successfully",
-      data: newCategory,
-    });
+    return newCategory;
   } catch (error) {
     console.error(error);
 
-    return res.status(500).json({
-      success: false,
-      message: error instanceof Error ? error.message : "Something went wrong",
-    });
+    return error
   }
 };
-export const getAllCategory = async (req: Request, res: Response) => {
+export const getAllCategory = async () => {
   try {
     const allCategory = await prisma.category.findMany();
-    res.status(200).json({
-      success: true,
-      message: "Get All Category Successfully",
-      data: allCategory,
-    });
+    return allCategory;
   } catch (error) {
     console.log(error);
-    return res.status(500).json({
-      success: false,
-      message: error instanceof Error ? error.message : "Something went wrong",
-    });
+    return error;
   }
 };
 
-export const updateCategory = async (req: Request, res: Response) => {
-  const newData = req.body;
-  const id=req.query.id
+export const updateCategory = async (newData:CategoryDataType,id:string) => {
+  
   try {
     const updatedCategory = await prisma.category.update({
       where: {
@@ -46,22 +34,15 @@ export const updateCategory = async (req: Request, res: Response) => {
       },
       data: newData,
     });
-    res.status(201).json({
-      success:true,
-      message:'Category updated successfully',
-      data:updatedCategory
-    })
+    return updatedCategory;
   } catch (error) {
     console.log(error);
-    return res.status(500).json({
-      success: false,
-      message: error instanceof Error ? error.message : "Something went wrong",
-    });
+    return error
   }
 };
 
-export const deleteCategory=async(req:Request,res:Response)=>{
-  const id=req.query.id;
+export const deleteCategory=async(id:string)=>{
+  
   try{
     const deletedCategory=await prisma.category.update({
       where:{
@@ -71,17 +52,10 @@ export const deleteCategory=async(req:Request,res:Response)=>{
         deletedAt:new Date()
       },
     })
-    res.status(200).json({
-      success:true,
-      message:'category deleted successfully',
-      data:deletedCategory
-    })
+    return deletedCategory;
   }
   catch (error) {
     console.log(error);
-    return res.status(500).json({
-      success: false,
-      message: error instanceof Error ? error.message : "Something went wrong",
-    });
+    return error
   }
 }

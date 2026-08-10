@@ -1,9 +1,10 @@
 import { Router } from "express";
-import { createUser, deleteUser, getAllUser, updateUser } from "../services/user.service";
+import { get, update, userDelete } from "../controllers/user.controller";
+
 const route=Router()
 
-route.post("/create",createUser)
-route.get("/",getAllUser)
-route.patch("/update",updateUser)
-route.delete("/delete",deleteUser)
+
+route.get("/",get)
+route.patch("/update",update)
+route.delete("/delete",userDelete)
 export default route;

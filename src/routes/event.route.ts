@@ -1,10 +1,11 @@
 import { Router } from "express";
-import { createEvent, deleteEvent, getAllEvent, updateEvent } from "../services/event.service";
+import { eventCreate, eventDelete, eventGet, eventUpdate } from "../controllers/event.controller";
+
 
 const route=Router()
 
-route.post("/create",createEvent)
-route.get("/",getAllEvent)
-route.patch("/update",updateEvent)
-route.delete("/delete",deleteEvent)
+route.post("/create",eventCreate)
+route.get("/",eventGet)
+route.patch("/update",eventUpdate)
+route.delete("/delete",eventDelete)
 export default route

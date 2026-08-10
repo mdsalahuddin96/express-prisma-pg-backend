@@ -5,13 +5,14 @@ import categoryRoute from './routes/category.route'
 import eventRoute from './routes/event.route'
 import bookingRoute from './routes/booking.route'
 import reviewRoute from './routes/review.route'
+import authRoute from'./routes/auth.route'
 const app=express()
 app.use(cors())
 app.use(express.json())
 
 
 app.use("/api/users",userRoute)
-
+app.use("/api/auth",authRoute)
 app.use("/api/categories",categoryRoute)
 
 app.use("/api/events",eventRoute)

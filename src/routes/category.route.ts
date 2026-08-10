@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { createCategory, deleteCategory, getAllCategory, updateCategory } from "../services/category.service";
+import { categoryCreate, categoryDelete, categoryGet, categoryUpdate } from "../controllers/category.controller";
 
 const route=Router()
 
-route.post("/create",createCategory)
-route.get("/",getAllCategory)
-route.patch("/update",updateCategory)
-route.delete("/delete",deleteCategory)
+route.post("/create",categoryCreate)
+route.get("/",categoryGet)
+route.patch("/update",categoryUpdate)
+route.delete("/delete",categoryDelete)
 export default route

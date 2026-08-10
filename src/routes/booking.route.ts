@@ -1,10 +1,11 @@
 import { Router } from "express";
+import { bookingCreate, bookingDelete, bookingGetById, bookingUpdate } from "../controllers/booking.controller";
 
-import { createBooking, deleteBooking, getBookingByUserId, updateBooking } from "../services/booking.service";
+
 
 const route=Router()
-route.post("/create",createBooking)
-route.get("/",getBookingByUserId)
-route.patch("/update",updateBooking)
-route.delete("/delete",deleteBooking)
+route.post("/create",bookingCreate)
+route.get("/",bookingGetById)
+route.patch("/update",bookingUpdate)
+route.delete("/delete",bookingDelete)
 export default route

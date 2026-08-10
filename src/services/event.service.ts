@@ -1,27 +1,31 @@
-import { Request, Response } from "express";
 import prisma from "../lib/prisma";
 
-export const createEvent = async (req: Request, res: Response) => {
-  const eventData = req.body;
+interface EventDataType {
+  title: string;
+  organizerId: string;
+  categoryId: string;
+  description: string;
+  location?: string;
+  capacity?: string;
+  price: number;
+  image?: string;
+  startDate: Date;
+  endDate: Date;
+  status: "Draft" | "Published" | "Cancelled" | "Completed";
+}
+export const createEvent = async (eventData: EventDataType) => {
   try {
     const newEvent = await prisma.event.create({
       data: eventData,
     });
-    res.status(200).json({
-      success: true,
-      message: "New Event Created Successfully",
-      data: newEvent,
-    });
+    return newEvent;
   } catch (error) {
     console.log(error);
-    return res.status(500).json({
-      success: false,
-      message: error instanceof Error ? error.message : "Something went wrong",
-    });
+    return error;
   }
 };
 
-export const getAllEvent = async (req: Request, res: Response) => {
+export const getAllEvent = async () => {
   try {
     const allEvent = await prisma.event.findMany({
       include: {
@@ -38,22 +42,13 @@ export const getAllEvent = async (req: Request, res: Response) => {
         },
       },
     });
-    res.status(200).json({
-      success: true,
-      message: "Get All Events Successfully",
-      data: allEvent,
-    });
+    return allEvent;
   } catch (error) {
     console.log(error);
-    return res.status(500).json({
-      success: false,
-      message: error instanceof Error ? error.message : "Something went wrong",
-    });
+    return error;
   }
 };
-export const updateEvent = async (req: Request, res: Response) => {
-  const newData = req.body;
-  const id = req.query.id;
+export const updateEvent = async (newData: EventDataType, id: string) => {
   try {
     const updatedEvent = await prisma.event.update({
       where: {
@@ -61,42 +56,26 @@ export const updateEvent = async (req: Request, res: Response) => {
       },
       data: newData,
     });
-    res.status(200).json({
-      success: true,
-      message: "Event Updated Successfully",
-      data: updatedEvent,
-    });
+    return updatedEvent;
   } catch (error) {
     console.log(error);
-    return res.status(500).json({
-      success: false,
-      message: error instanceof Error ? error.message : "Something went wrong",
-    });
+    return error;
   }
 };
 
-export const deleteEvent=async(req:Request,res:Response)=>{
-  const id=req.query.id;
-  try{
-    const deletedEvent=await prisma.event.update({
-      where:{
-        id:id?.toString()
+export const deleteEvent = async (id: string) => {
+  try {
+    const deletedEvent = await prisma.event.update({
+      where: {
+        id: id?.toString(),
       },
-      data:{
-        deletedAt:new Date()
+      data: {
+        deletedAt: new Date(),
       },
-    })
-    res.status(200).json({
-      success:true,
-      message:'User deleted successfully',
-      data:deletedEvent
-    })
-  }
-  catch (error) {
-    console.log(error);
-    return res.status(500).json({
-      success: false,
-      message: error instanceof Error ? error.message : "Something went wrong",
     });
+    return deletedEvent;
+  } catch (error) {
+    console.log(error);
+    return error;
   }
-}
+};

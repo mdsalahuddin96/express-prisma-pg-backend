@@ -1,50 +1,41 @@
-import { Request, Response } from "express";
+
 import prisma from "../lib/prisma";
 
-export const createBooking = async (req: Request, res: Response) => {
-  const bookingData = req.body;
+interface BookingDataType {
+  userId: string;
+  eventId: string;
+  quantity: number;
+  totalAmount: number;
+  status: "Pending" | "Confirm" | "Cancelled";
+  bookingDate: Date;
+}
+export const createBooking = async (bookingData: BookingDataType) => {
   try {
     const newBooking = await prisma.booking.create({
-      data: bookingData,
-    });
-    res.status(200).json({
-      success: true,
-      message: "New Booking Created Successfully",
-      data: newBooking,
-    });
+      data:bookingData
+    })
+    return newBooking;
   } catch (error) {
     console.log(error);
-    return res.status(500).json({
-      success: false,
-      message: error instanceof Error ? error.message : "Something went wrong",
-    });
+    return error;
   }
 };
 
-export const getBookingByUserId = async (req: Request, res: Response) => {
-    const userId=req.query.userId
+export const getBookingByUserId = async (userId:string) => {
+  
   try {
     const bookings = await prisma.booking.findMany({
-        where:{
-            userId:userId?.toString()
-        }
+      where: {
+        userId: userId?.toString(),
+      },
     });
-    res.status(200).json({
-      success: true,
-      message: "Successfully get all bookings of a user",
-      data: bookings,
-    });
+    return bookings;
   } catch (error) {
     console.log(error);
-    return res.status(500).json({
-      success: false,
-      message: error instanceof Error ? error.message : "Something went wrong",
-    });
+    return error
   }
 };
-export const updateBooking = async (req: Request, res: Response) => {
-  const newData = req.body;
-  const id = req.query.id;
+export const updateBooking = async (newData:BookingDataType,id:string) => {
   try {
     const updatedBooking = await prisma.booking.update({
       where: {
@@ -52,42 +43,26 @@ export const updateBooking = async (req: Request, res: Response) => {
       },
       data: newData,
     });
-    res.status(200).json({
-      success: true,
-      message: "Booking Updated Successfully",
-      data: updatedBooking,
-    });
+    return updatedBooking;
   } catch (error) {
     console.log(error);
-    return res.status(500).json({
-      success: false,
-      message: error instanceof Error ? error.message : "Something went wrong",
-    });
+    return error;
   }
 };
 
-export const deleteBooking=async(req:Request,res:Response)=>{
-  const id=req.query.id;
-  try{
-    const deletedBooking=await prisma.booking.update({
-      where:{
-        id:id?.toString()
+export const deleteBooking = async (id:string) => {
+  try {
+    const deletedBooking = await prisma.booking.update({
+      where: {
+        id: id?.toString(),
       },
-      data:{
-        status:"Cancelled"
-      }
-    })
-    res.status(200).json({
-      success:true,
-      message:'Booking deleted successfully',
-      data:deletedBooking
-    })
-  }
-  catch (error) {
-    console.log(error);
-    return res.status(500).json({
-      success: false,
-      message: error instanceof Error ? error.message : "Something went wrong",
+      data: {
+        status: "Cancelled",
+      },
     });
+    return deletedBooking;
+  } catch (error) {
+    console.log(error);
+    return error;
   }
-}
+};

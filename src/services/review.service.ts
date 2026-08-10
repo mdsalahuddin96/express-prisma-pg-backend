@@ -1,46 +1,36 @@
 import { Request, Response } from "express";
 import prisma from "../lib/prisma";
 
-export const createReview = async (req: Request, res: Response) => {
-  const reviewData = req.body;
+interface ReviewDataType {
+  userId: string;
+  eventId: string;
+  rating: number;
+  comment?: string;
+  deletedAt?: Date;
+}
+export const createReview = async (reviewData: ReviewDataType) => {
   try {
     const newReview = await prisma.review.create({
       data: reviewData,
     });
-    res.status(200).json({
-      success: true,
-      message: "New Review Created Successfully",
-      data: newReview,
-    });
+    return newReview;
   } catch (error) {
     console.log(error);
-    return res.status(500).json({
-      success: false,
-      message: error instanceof Error ? error.message : "Something went wrong",
-    });
+    return error;
   }
 };
 
-export const getAllReview = async (req: Request, res: Response) => {
+export const getAllReview = async () => {
   try {
     const reviews = await prisma.review.findMany();
-    res.status(200).json({
-      success: true,
-      message: "Successfully get all reviews",
-      data: reviews,
-    });
+    return reviews;
   } catch (error) {
     console.log(error);
-    return res.status(500).json({
-      success: false,
-      message: error instanceof Error ? error.message : "Something went wrong",
-    });
+    return error;
   }
 };
 
-export const updateReview = async (req: Request, res: Response) => {
-  const newData = req.body;
-  const id = req.query.id;
+export const updateReview = async (newData: ReviewDataType, id: string) => {
   try {
     const updatedReview = await prisma.review.update({
       where: {
@@ -48,42 +38,26 @@ export const updateReview = async (req: Request, res: Response) => {
       },
       data: newData,
     });
-    res.status(200).json({
-      success: true,
-      message: "Review Updated Successfully",
-      data: updatedReview,
-    });
+    return updatedReview;
   } catch (error) {
     console.log(error);
-    return res.status(500).json({
-      success: false,
-      message: error instanceof Error ? error.message : "Something went wrong",
-    });
+    return error;
   }
 };
 
-export const deleteReview=async(req:Request,res:Response)=>{
-  const id=req.query.id;
-  try{
-    const deletedReview=await prisma.review.update({
-      where:{
-        id:id?.toString()
+export const deleteReview = async (id: string) => {
+  try {
+    const deletedReview = await prisma.review.update({
+      where: {
+        id: id?.toString(),
       },
-      data:{
-        deletedAt:new Date()
-      }
-    })
-    res.status(200).json({
-      success:true,
-      message:'Review deleted successfully',
-      data:deletedReview
-    })
-  }
-  catch (error) {
-    console.log(error);
-    return res.status(500).json({
-      success: false,
-      message: error instanceof Error ? error.message : "Something went wrong",
+      data: {
+        deletedAt: new Date(),
+      },
     });
+    return deletedReview;
+  } catch (error) {
+    console.log(error);
+    return error;
   }
-}
+};
