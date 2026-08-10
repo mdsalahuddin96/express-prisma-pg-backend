@@ -1,16 +1,16 @@
 import { Request, Response } from "express";
 import prisma from "../lib/prisma";
 
-export const createBooking = async (req: Request, res: Response) => {
-  const bookingData = req.body;
+export const createReview = async (req: Request, res: Response) => {
+  const reviewData = req.body;
   try {
-    const newBooking = await prisma.booking.create({
-      data: bookingData,
+    const newReview = await prisma.review.create({
+      data: reviewData,
     });
     res.status(200).json({
       success: true,
-      message: "New Booking Created Successfully",
-      data: newBooking,
+      message: "New Review Created Successfully",
+      data: newReview,
     });
   } catch (error) {
     console.log(error);
@@ -21,18 +21,13 @@ export const createBooking = async (req: Request, res: Response) => {
   }
 };
 
-export const getBookingByUserId = async (req: Request, res: Response) => {
-    const userId=req.query.userId
+export const getAllReview = async (req: Request, res: Response) => {
   try {
-    const bookings = await prisma.booking.findMany({
-        where:{
-            userId:userId?.toString()
-        }
-    });
+    const reviews = await prisma.review.findMany();
     res.status(200).json({
       success: true,
-      message: "Successfully get all bookings of a user",
-      data: bookings,
+      message: "Successfully get all reviews",
+      data: reviews,
     });
   } catch (error) {
     console.log(error);
@@ -42,11 +37,12 @@ export const getBookingByUserId = async (req: Request, res: Response) => {
     });
   }
 };
-export const updateBooking = async (req: Request, res: Response) => {
+
+export const updateReview = async (req: Request, res: Response) => {
   const newData = req.body;
   const id = req.query.id;
   try {
-    const updatedBooking = await prisma.booking.update({
+    const updatedReview = await prisma.review.update({
       where: {
         id: id?.toString(),
       },
@@ -54,8 +50,8 @@ export const updateBooking = async (req: Request, res: Response) => {
     });
     res.status(200).json({
       success: true,
-      message: "Booking Updated Successfully",
-      data: updatedBooking,
+      message: "Review Updated Successfully",
+      data: updatedReview,
     });
   } catch (error) {
     console.log(error);
@@ -66,21 +62,21 @@ export const updateBooking = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteBooking=async(req:Request,res:Response)=>{
+export const deleteReview=async(req:Request,res:Response)=>{
   const id=req.query.id;
   try{
-    const deletedBooking=await prisma.booking.update({
+    const deletedReview=await prisma.review.update({
       where:{
         id:id?.toString()
       },
       data:{
-        status:"Cancelled"
+        deletedAt:new Date()
       }
     })
     res.status(200).json({
       success:true,
-      message:'Booking deleted successfully',
-      data:deletedBooking
+      message:'Review deleted successfully',
+      data:deletedReview
     })
   }
   catch (error) {
