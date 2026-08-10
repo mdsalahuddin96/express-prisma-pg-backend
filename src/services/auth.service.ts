@@ -72,11 +72,7 @@ export const loginUser = async (loginData: LoginData) => {
   }
 
   // Compare password
-  const isPasswordValid = await bcrypt.compare(
-    password,
-    user.password
-  );
-
+  const isPasswordValid = await bcrypt.compare(password, user.password);
   if (!isPasswordValid) {
     throw new Error("Invalid email or password");
   }
@@ -91,7 +87,7 @@ export const loginUser = async (loginData: LoginData) => {
     process.env.JWT_SECRET as string,
     {
       expiresIn: "7d",
-    }
+    },
   );
 
   return {
