@@ -7,6 +7,7 @@ interface RegisterData {
   email: string;
   password: string;
   image?: string;
+  role:"User"|"Organizer"|"Admin"
 }
 
 interface LoginData {
@@ -15,7 +16,7 @@ interface LoginData {
 }
 
 export const registerUser = async (userData: RegisterData) => {
-  const { name, email, password, image } = userData;
+  const { name, email, password, image,role } = userData;
 
   // Check existing user
   const existingUser = await prisma.user.findUnique({
@@ -38,6 +39,7 @@ export const registerUser = async (userData: RegisterData) => {
       email,
       password: hashedPassword,
       image,
+      role
     },
     select: {
       id: true,
