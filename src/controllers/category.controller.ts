@@ -37,7 +37,7 @@ export const categoryGet = async (req: Request, res: Response) => {
 };
 export const categoryUpdate = async (req: Request, res: Response) => {
   const newData = req.body;
-  const id = req.query.id;
+  const id = req.params.id;
   try {
     const updatedEvent = await updateCategory(newData,id?.toString()||"")
     res.status(200).json({
@@ -54,7 +54,7 @@ export const categoryUpdate = async (req: Request, res: Response) => {
   }
 };
 export const categoryDelete=async(req:Request,res:Response)=>{
-  const id=req.query.id;
+  const id=req.params.id;
   try{
     const deletedEvent=await deleteCategory(id?.toString()||"")
     res.status(200).json({

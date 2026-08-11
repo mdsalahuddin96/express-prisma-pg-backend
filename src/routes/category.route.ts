@@ -5,6 +5,6 @@ const route=Router()
 
 route.post("/create",categoryCreate)
 route.get("/",categoryGet)
-route.patch("/update",categoryUpdate)
-route.delete("/delete",categoryDelete)
+route.patch("/update/:id",categoryUpdate)
+route.delete("/delete/:id",categoryDelete)
 export default route

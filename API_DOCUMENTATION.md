@@ -177,7 +177,7 @@ GET /api/categories
 ### Update Category
 
 ```http
-PATCH /api/categories/update?id=<categoryId>
+PATCH /api/categories/update/:id
 ```
 
 **Auth:** Public
@@ -185,7 +185,7 @@ PATCH /api/categories/update?id=<categoryId>
 ### Delete Category
 
 ```http
-DELETE /api/categories/delete?id=<categoryId>
+DELETE /api/categories/delete/:id
 ```
 
 **Auth:** Public
