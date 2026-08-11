@@ -4,21 +4,27 @@ import prisma from "../lib/prisma";
 
 interface UserDataType{
   name: string;
-  email:string;
-  password:string;
   image?:string;
-  role: "User"|"Organizer"|"Admin"
+  role?: "User"|"Organizer"|"Admin"
 }
 
 export const getUser=async()=>{
   const users = await prisma.user.findMany();
   return users;
 }
-export const updateUser = async (userData:UserDataType,email:string) => {
+export const getUserById=async(userId:string)=>{
+  const user=await prisma.user.findUnique({
+    where:{
+      id:userId
+    }
+  })
+  return user;
+}
+export const updateUser = async (userData:UserDataType,userId:string) => {
   try {
     const updateUser = await prisma.user.update({
       where: {
-        email: email,
+        id: userId,
       },
       data: userData,
     });
@@ -29,11 +35,11 @@ export const updateUser = async (userData:UserDataType,email:string) => {
   }
 };
 
-export const deleteUser=async(email:string)=>{
+export const deleteUser=async(userId:string)=>{
   try{
    const deletedUser=await prisma.user.update({
       where:{
-        email:email?.toString()
+        id:userId?.toString()
       },
       data:{
         deletedAt:new Date()

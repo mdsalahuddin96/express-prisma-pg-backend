@@ -1,10 +1,11 @@
 import { Router } from "express";
 import { get, update, userDelete } from "../controllers/user.controller";
+import { authenticate } from "../middlewares/auth.middleware";
 
 const route=Router()
 
 
-route.get("/",get)
-route.patch("/update",update)
-route.delete("/delete",userDelete)
+route.get("/",authenticate,get)
+route.patch("/update/:id",authenticate,update)
+route.delete("/delete/:id",authenticate,userDelete)
 export default route;
