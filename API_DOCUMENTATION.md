@@ -3,35 +3,25 @@
 **Base URL:** `http://localhost:5000`
 **Content-Type:** `application/json`
 
-## Authentication
-
-Protected routes require:
+Protected endpoints require:
 
 ```http
 Authorization: Bearer <JWT_TOKEN>
 ```
 
-JWT contains `userId`, `email`, and `role`.
-
-Roles:
-
-* `User`
-* `Organizer`
-* `Admin`
-
 ---
 
-# 1. Authentication
+# Authentication APIs
 
-### Register
+## 1. Register User
 
-```http
-POST /api/auth/register
-```
+**Endpoint:** `/api/auth/register`
 
-**Auth:** Public
+**Method:** `POST`
 
-**Body:**
+**Description:** Register a new user account. Password is securely hashed using bcrypt.
+
+**Request Body:**
 
 ```json
 {
@@ -53,17 +43,23 @@ POST /api/auth/register
 }
 ```
 
+**Status Codes:**
+
+* `201` — User registered successfully
+* `400` — Invalid registration data
+* `500` — Server error
+
 ---
 
-### Login
+## 2. Login
 
-```http
-POST /api/auth/login
-```
+**Endpoint:** `/api/auth/login`
 
-**Auth:** Public
+**Method:** `POST`
 
-**Body:**
+**Description:** Authenticate a user and generate a JWT token.
+
+**Request Body:**
 
 ```json
 {
@@ -85,79 +81,132 @@ POST /api/auth/login
 }
 ```
 
----
+**Status Codes:**
 
-# 2. Users
-
-### Get Users
-
-```http
-GET /api/users
-```
-
-**Auth:** Required
-
-* User/Organizer → own information
-* Admin → all users
+* `200` — Login successful
+* `401` — Invalid email or password
+* `500` — Server error
 
 ---
 
-### Update User
+# User APIs
 
-```http
-PATCH /api/users/:id
-```
+## 3. Get Users
 
-**Auth:** Required
+**Endpoint:** `/api/users`
 
-* User/Organizer → own profile only
-* Admin → any user
+**Method:** `GET`
 
-**Body:**
+**Description:** Regular users can retrieve their own information. Admin can retrieve all users.
+
+**Request Body:** None
+
+**Response:**
 
 ```json
 {
-  "name": "Updated Name",
-  "image": "https://example.com/image.jpg"
+  "success": true,
+  "message": "User Info retrieve successfully",
+  "data": {}
 }
 ```
 
-Admin can also update:
+**Status Codes:**
+
+* `200` — Users retrieved successfully
+* `401` — Authentication required
+* `500` — Server error
+
+---
+
+## 4. Update User
+
+**Endpoint:** `/api/users/:id`
+
+**Method:** `PATCH`
+
+**Description:** Users can update their own profile. Admin can update any user's information.
+
+**Request Body:**
 
 ```json
 {
+  "name": "Rahim Ahmed Updated",
+  "image": "https://example.com/new-image.jpg"
+}
+```
+
+**Admin Request Body:**
+
+```json
+{
+  "name": "Rahim Ahmed Updated",
+  "image": "https://example.com/new-image.jpg",
   "role": "Organizer"
 }
 ```
 
----
+**Response:**
 
-### Delete User
-
-```http
-DELETE /api/users/:id
+```json
+{
+  "success": true,
+  "message": "User Updated Successfully",
+  "data": {}
+}
 ```
 
-**Auth:** Required
+**Status Codes:**
 
-* User/Organizer → own account
-* Admin → any account
-
-**Note:** Uses soft delete (`deletedAt`).
+* `200` — User updated successfully
+* `401` — Authentication required
+* `403` — Not allowed to update this user
+* `404` — User not found
+* `500` — Server error
 
 ---
 
-# 3. Categories
+## 5. Delete User
 
-### Create Category
+**Endpoint:** `/api/users/:id`
 
-```http
-POST /api/categories/create
+**Method:** `DELETE`
+
+**Description:** Delete a user account using soft delete. The user record remains in the database and `deletedAt` is updated.
+
+**Request Body:** None
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "message": "User deleted successfully",
+  "data": {}
+}
 ```
 
-**Auth:** Public
+**Status Codes:**
 
-**Body:**
+* `200` — User deleted successfully
+* `401` — Authentication required
+* `403` — Not allowed to delete this user
+* `404` — User not found
+* `500` — Server error
+
+---
+
+# Category APIs
+
+## 6. Create Category
+
+**Endpoint:** `/api/categories/create`
+
+**Method:** `POST`
+
+**Description:** Create a new event category.
+
+**Request Body:**
 
 ```json
 {
@@ -166,50 +215,130 @@ POST /api/categories/create
 }
 ```
 
-### Get Categories
+**Response:**
 
-```http
-GET /api/categories
+```json
+{
+  "success": true,
+  "message": "New Category Created Successfully",
+  "data": {}
+}
 ```
 
-**Auth:** Public
+**Status Codes:**
 
-### Update Category
-
-```http
-PATCH /api/categories/update/:id
-```
-
-**Auth:** Public
-
-### Delete Category
-
-```http
-DELETE /api/categories/delete/:id
-```
-
-**Auth:** Public
+* `200` — Category created successfully
+* `500` — Server error
 
 ---
 
-# 4. Events
+## 7. Get Categories
 
-### Create Event
+**Endpoint:** `/api/categories`
 
-```http
-POST /api/events/create
+**Method:** `GET`
+
+**Description:** Retrieve all event categories.
+
+**Request Body:** None
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "message": "Get All Categories Successfully",
+  "data": []
+}
 ```
 
-**Auth:** Required
-**Role:** `Organizer`, `Admin`
+**Status Codes:**
 
-**Body:**
+* `200` — Categories retrieved successfully
+* `500` — Server error
+
+---
+
+## 8. Update Category
+
+**Endpoint:** `/api/categories/update/:id`
+
+**Method:** `PATCH`
+
+**Description:** Update an existing category.
+
+**Request Body:**
+
+```json
+{
+  "name": "Technology & AI",
+  "description": "Technology and AI related events"
+}
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "message": "Category Updated Successfully",
+  "data": {}
+}
+```
+
+**Status Codes:**
+
+* `200` — Category updated successfully
+* `404` — Category not found
+* `500` — Server error
+
+---
+
+## 9. Delete Category
+
+**Endpoint:** `/api/categories/delete/:id`
+
+**Method:** `DELETE`
+
+**Description:** Soft delete an event category.
+
+**Request Body:** None
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "message": "Category deleted successfully",
+  "data": {}
+}
+```
+
+**Status Codes:**
+
+* `200` — Category deleted successfully
+* `404` — Category not found
+* `500` — Server error
+
+---
+
+# Event APIs
+
+## 10. Create Event
+
+**Endpoint:** `/api/events/create`
+
+**Method:** `POST`
+
+**Description:** Create a new event. Only Organizer and Admin can create events. `organizerId` is taken from the authenticated user.
+
+**Request Body:**
 
 ```json
 {
   "title": "Bangladesh Tech Summit 2026",
   "categoryId": "category-uuid",
-  "description": "Technology conference",
+  "description": "A technology conference",
   "location": "Dhaka",
   "capacity": "500",
   "price": 1500,
@@ -220,61 +349,134 @@ POST /api/events/create
 }
 ```
 
-`organizerId` is automatically taken from the authenticated user.
+**Response:**
+
+```json
+{
+  "success": true,
+  "message": "New Event Created Successfully",
+  "data": {}
+}
+```
+
+**Status Codes:**
+
+* `200` — Event created successfully
+* `401` — Authentication required
+* `403` — Only Organizer/Admin can create events
+* `500` — Server error
 
 ---
 
-### Get Events
+## 11. Get Events
 
-```http
-GET /api/events
+**Endpoint:** `/api/events`
+
+**Method:** `GET`
+
+**Description:** Retrieve all events with related category and organizer information.
+
+**Request Body:** None
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "message": "Get All Events Successfully",
+  "data": []
+}
 ```
 
-**Auth:** Public
+**Status Codes:**
 
-Returns event information with related category/organizer information.
+* `200` — Events retrieved successfully
+* `500` — Server error
 
 ---
 
-### Update Event
+## 12. Update Event
 
-```http
-PATCH /api/events/update?id=<eventId>
+**Endpoint:** `/api/events/update?id=<eventId>`
+
+**Method:** `PATCH`
+
+**Description:** Organizer can update their own event. Admin can update any event.
+
+**Request Body:**
+
+```json
+{
+  "title": "Updated Tech Summit",
+  "description": "Updated event description",
+  "location": "Dhaka",
+  "capacity": "600",
+  "price": 1800,
+  "status": "Published"
+}
 ```
 
-**Auth:** Required
+**Response:**
 
-* Organizer → own events
-* Admin → any event
+```json
+{
+  "success": true,
+  "message": "Event Updated Successfully",
+  "data": {}
+}
+```
+
+**Status Codes:**
+
+* `200` — Event updated successfully
+* `401` — Authentication required
+* `403` — Not allowed to update this event
+* `404` — Event not found
+* `500` — Server error
 
 ---
 
-### Delete Event
+## 13. Delete Event
 
-```http
-DELETE /api/events/delete?id=<eventId>
+**Endpoint:** `/api/events/delete?id=<eventId>`
+
+**Method:** `DELETE`
+
+**Description:** Organizer can delete their own event. Admin can delete any event. Uses soft delete.
+
+**Request Body:** None
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "message": "Event deleted successfully",
+  "data": {}
+}
 ```
 
-**Auth:** Required
+**Status Codes:**
 
-* Organizer → own events
-* Admin → any event
-
-Uses soft delete.
+* `200` — Event deleted successfully
+* `401` — Authentication required
+* `403` — Not allowed to delete this event
+* `404` — Event not found
+* `500` — Server error
 
 ---
 
-# 5. Bookings
+# Booking APIs
 
-All booking routes require authentication.
+## 14. Create Booking
 
-### Create Booking
+**Endpoint:** `/api/bookings/create`
 
-```http
-POST /api/bookings/create
-```
+**Method:** `POST`
 
-**Body:**
+**Description:** Create a booking for an event. `userId` is taken from the authenticated user.
+
+**Request Body:**
 
 ```json
 {
@@ -285,53 +487,131 @@ POST /api/bookings/create
 }
 ```
 
-`userId` is taken from the authenticated user.
+**Response:**
+
+```json
+{
+  "success": true,
+  "message": "New Booking Created Successfully",
+  "data": {}
+}
+```
+
+**Status Codes:**
+
+* `200` — Booking created successfully
+* `401` — Authentication required
+* `500` — Server error
 
 ---
 
-### Get My Bookings
+## 15. Get My Bookings
 
-```http
-GET /api/bookings
+**Endpoint:** `/api/bookings`
+
+**Method:** `GET`
+
+**Description:** Retrieve all bookings of the authenticated user.
+
+**Request Body:** None
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "message": "Successfully get all bookings of a user",
+  "data": []
+}
 ```
 
-Returns bookings of the authenticated user.
+**Status Codes:**
+
+* `200` — Bookings retrieved successfully
+* `401` — Authentication required
+* `500` — Server error
 
 ---
 
-### Update Booking
+## 16. Update Booking
 
-```http
-PATCH /api/bookings/update?id=<bookingId>
+**Endpoint:** `/api/bookings/update?id=<bookingId>`
+
+**Method:** `PATCH`
+
+**Description:** Update an existing booking according to the user's authorization.
+
+**Request Body:**
+
+```json
+{
+  "quantity": 3,
+  "totalAmount": 4500,
+  "status": "Confirm"
+}
 ```
 
-**Auth:** Required
+**Response:**
 
-Users can update their own booking; Organizer/Admin can manage bookings according to their authorization.
+```json
+{
+  "success": true,
+  "message": "Booking Updated Successfully",
+  "data": {}
+}
+```
+
+**Status Codes:**
+
+* `200` — Booking updated successfully
+* `401` — Authentication required
+* `403` — Not allowed to update this booking
+* `404` — Booking not found
+* `500` — Server error
 
 ---
 
-### Cancel Booking
+## 17. Cancel Booking
 
-```http
-DELETE /api/bookings/delete?id=<bookingId>
+**Endpoint:** `/api/bookings/delete?id=<bookingId>`
+
+**Method:** `DELETE`
+
+**Description:** Cancel a booking. The booking is not physically deleted; its status becomes `Cancelled`.
+
+**Request Body:** None
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "message": "Booking deleted successfully",
+  "data": {}
+}
 ```
 
-**Auth:** Required
+**Status Codes:**
 
-Booking is marked as `Cancelled` rather than physically deleted.
+* `200` — Booking cancelled successfully
+* `401` — Authentication required
+* `403` — Not allowed to cancel this booking
+* `404` — Booking not found
+* `500` — Server error
 
 ---
 
-# 6. Reviews
+# Review APIs
 
-### Create Review
+## 18. Create Review
 
-```http
-POST /api/reviews/create
-```
+**Endpoint:** `/api/reviews/create`
 
-**Auth:** Public
+**Method:** `POST`
+
+**Description:** Create a review for an event.
+
+**Request Body:**
 
 ```json
 {
@@ -342,55 +622,121 @@ POST /api/reviews/create
 }
 ```
 
-### Get Reviews
+**Response:**
 
-```http
-GET /api/reviews
+```json
+{
+  "success": true,
+  "message": "New Review Created Successfully",
+  "data": {}
+}
 ```
 
-**Auth:** Public
+**Status Codes:**
 
-### Update Review
-
-```http
-PATCH /api/reviews/update?id=<reviewId>
-```
-
-**Auth:** Public
-
-### Delete Review
-
-```http
-DELETE /api/reviews/delete?id=<reviewId>
-```
-
-**Auth:** Public
+* `200` — Review created successfully
+* `500` — Server error
 
 ---
 
-# 7. Common Status Codes
+## 19. Get Reviews
 
-| Code  | Meaning                 |
-| ----- | ----------------------- |
-| `200` | Success                 |
-| `201` | Created                 |
-| `400` | Bad Request             |
-| `401` | Authentication required |
-| `403` | Forbidden               |
-| `404` | Not Found               |
-| `500` | Server Error            |
+**Endpoint:** `/api/reviews`
+
+**Method:** `GET`
+
+**Description:** Retrieve all reviews.
+
+**Request Body:** None
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "message": "Successfully get all reviews",
+  "data": []
+}
+```
+
+**Status Codes:**
+
+* `200` — Reviews retrieved successfully
+* `500` — Server error
 
 ---
 
-## Authorization Summary
+## 20. Update Review
 
-| Feature               | User | Organizer | Admin |
-| --------------------- | ---- | --------- | ----- |
-| Own profile           | ✅    | ✅         | ✅     |
-| All users             | ❌    | ❌         | ✅     |
-| Create event          | ❌    | ✅         | ✅     |
-| Manage own events     | ❌    | ✅         | ✅     |
-| Manage any event      | ❌    | ❌         | ✅     |
-| Create booking        | ✅    | ✅         | ✅     |
-| Manage own booking    | ✅    | ✅         | ✅     |
-| Manage other bookings | ❌    | ✅         | ✅     |
+**Endpoint:** `/api/reviews/update?id=<reviewId>`
+
+**Method:** `PATCH`
+
+**Description:** Update an existing review.
+
+**Request Body:**
+
+```json
+{
+  "rating": 4,
+  "comment": "Good event overall."
+}
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "message": "Review Updated Successfully",
+  "data": {}
+}
+```
+
+**Status Codes:**
+
+* `200` — Review updated successfully
+* `404` — Review not found
+* `500` — Server error
+
+---
+
+## 21. Delete Review
+
+**Endpoint:** `/api/reviews/delete?id=<reviewId>`
+
+**Method:** `DELETE`
+
+**Description:** Delete an existing review.
+
+**Request Body:** None
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "message": "Review deleted successfully",
+  "data": {}
+}
+```
+
+**Status Codes:**
+
+* `200` — Review deleted successfully
+* `404` — Review not found
+* `500` — Server error
+
+---
+
+# Common Status Codes
+
+| Status Code | Meaning                 |
+| ----------- | ----------------------- |
+| `200`       | Request successful      |
+| `201`       | Resource created        |
+| `400`       | Bad request             |
+| `401`       | Authentication required |
+| `403`       | Forbidden               |
+| `404`       | Resource not found      |
+| `500`       | Internal server error   |
