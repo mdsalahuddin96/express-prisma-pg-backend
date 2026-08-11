@@ -1,5 +1,6 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Response } from "express";
 import jwt from "jsonwebtoken";
+import { AuthenticatedRequest } from "../lib/auth.types";
 
 interface JwtPayload {
   userId: string;
@@ -8,7 +9,7 @@ interface JwtPayload {
 }
 
 export const authenticate = (
-  req: Request,
+  req: AuthenticatedRequest,
   res: Response,
   next: NextFunction
 ) => {
